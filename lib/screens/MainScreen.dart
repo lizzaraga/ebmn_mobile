@@ -31,7 +31,9 @@ class MainScreen extends HookWidget{
             icon: Icon(Icons.person_pin)
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.warning_amber_rounded)
+            icon: Icon(Icons.notification_important),
+            activeIcon: Icon(Icons.notification_important, color: Colors.redAccent,)
+
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history)
