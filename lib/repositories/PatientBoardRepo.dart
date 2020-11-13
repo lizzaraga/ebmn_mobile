@@ -50,10 +50,10 @@ class PatientBoardRepo{
     return mapList.map((e) => LabModel.fromJson(e)).toList(growable: false);
   }
 
-  Future<List<LegalDocumentModal>> getLegalDocuments() async{
+  Future<List<LegalDocumentModel>> getLegalDocuments() async{
     final response =  await _dio.get('/legal_docs/get/$patientId/$token/');
     final mapList = List<Map<String, dynamic>>.from(response.data['legal_docs_list']);
-    return mapList.map((e) => LegalDocumentModal.fromJson(e)).toList(growable: false);
+    return mapList.map((e) => LegalDocumentModel.fromJson(e)).toList(growable: false);
   }
 
   Future<List<MedicationListModel>> getMedicationList() async{

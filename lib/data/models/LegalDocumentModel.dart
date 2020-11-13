@@ -1,4 +1,4 @@
-class LegalDocumentModal{
+class LegalDocumentModel{
   int documentId;
   String category;
   String dateOfEstablishment;
@@ -7,7 +7,7 @@ class LegalDocumentModal{
   String reasonForDetermination;
   String legalDocumentUrl;
 
-  LegalDocumentModal.fromJson(Map<String, dynamic> data){
+  LegalDocumentModel.fromJson(Map<String, dynamic> data){
     documentId = data['document_id'];
     category = data['document_category'];
     dateOfEstablishment = data['document_date_of_establishment'];
