@@ -1,5 +1,16 @@
+import 'dart:io';
+
+import 'package:ebmn_mobile/data/models/auth/Credentials.dart';
+import 'package:ebmn_mobile/main.dart';
+import 'package:ebmn_mobile/screens/DefaultMessageDialog.dart';
+import 'package:ebmn_mobile/screens/LoginLoadingDialog.dart';
+import 'package:ebmn_mobile/src/blocs/AuthBloc.dart';
+import 'package:ebmn_mobile/utils/exceptions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'NoNetworkDialog.dart';
+import 'NoUserDialog.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,13 +24,21 @@ class _LoginScreenState extends State<LoginScreen> {
       resizeToAvoidBottomPadding: true,
       resizeToAvoidBottomInset: true,
       backgroundColor: Color(0xFF000000),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Color(0xff1A1A2E),
-          borderRadius: BorderRadius.circular(12)
-        ),
-        child: SizedBox.expand(
-          child: SingleChildScrollView(child: LoginView()),
+      body: SizedBox.expand(
+        child: Stack(
+          fit: StackFit.expand,
+          children:[ 
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xff1A1A2E),
+                borderRadius: BorderRadius.circular(12)
+              ),
+              child: SizedBox.expand(
+                child: SingleChildScrollView(child: LoginView()),
+              ),
+            ),
+
+          ]
         ),
       ),
     );
@@ -32,6 +51,28 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getIt.get<AuthBloc>().exception.listen((event) {
+      print('Listen ${event.runtimeType.toString()}');
+      switch (event.runtimeType) {
+        case SocketException:
+          showDialog(context: context, builder: (_) => NoNetworkDialog());
+          break;
+        case NoUserFoundException:
+        case FormatException:
+         showDialog(context: context, builder: (_) => NoUserDialog());
+         break;
+        default:
+        
+      }
+      
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -102,6 +143,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  String _email = "";
+  String _password = "";
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -114,6 +157,7 @@ class _LoginFormState extends State<LoginForm> {
             color: Color(0xFFC2DEFF).withOpacity(0.6),
           ),
           textFormField: TextFormField(
+            onChanged:(value) => _email = value,
             cursorColor: Color(0xFFC2DEFF),
             style: TextStyle(color: Color(0xFFC2DEFF)),
             decoration: InputDecoration(
@@ -131,6 +175,7 @@ class _LoginFormState extends State<LoginForm> {
             color: Color(0xFFC2DEFF).withOpacity(0.6),
           ),
           textFormField: TextFormField(
+            onChanged:(value) => _password = value,
             obscureText: true,
             cursorColor: Color(0xFFC2DEFF),
             style: TextStyle(color: Color(0xFFC2DEFF)),
@@ -145,7 +190,7 @@ class _LoginFormState extends State<LoginForm> {
         Container(
           width: MediaQuery.of(context).size.width - 65,
           child: MaterialButton(
-            onPressed: (){},
+            onPressed: () => onLogin(context),
             height: 50,
             color: Color(0xFFE94560),
             shape: RoundedRectangleBorder(
@@ -155,15 +200,29 @@ class _LoginFormState extends State<LoginForm> {
           ),
         ),
         SizedBox(height: 10,),
-        FlatButton(
-          onPressed: (){},
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10)
-          ),
-          child: Text("Forgot password ?", style: TextStyle(color:Color(0xFFC2DEFF).withOpacity(0.6)),)
-        )
+        // FlatButton(
+        //   onPressed: (){},
+        //   shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(10)
+        //   ),
+        //   child: Text("Forgot password ?", style: TextStyle(color:Color(0xFFC2DEFF).withOpacity(0.6)),)
+        // )
       ],
     );
+  }
+
+  void onLogin(BuildContext context) {
+    if(_email.trim().isEmpty || _password.trim().isEmpty){
+      showDialog(context: context, builder: (context) => DefaultMessageDialog(
+        title: "Credentials",
+        content: "Email or password must not be empty !",
+      ));
+    }
+    else {
+      showDialog(context: context, builder: (context) => LoginLoadingDialog());
+      getIt.get<AuthBloc>().login(Credentials(email: _email.trim(), password: _password.trim()));
+    }
+
   }
 }
 
