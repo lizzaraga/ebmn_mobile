@@ -219,6 +219,7 @@ class _LoginFormState extends State<LoginForm> {
       ));
     }
     else {
+      print("Email: $_email, password: $_password");
       showDialog(context: context, builder: (context) => LoginLoadingDialog());
       getIt.get<AuthBloc>().login(Credentials(email: _email.trim(), password: _password.trim()));
     }

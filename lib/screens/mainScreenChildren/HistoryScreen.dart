@@ -14,7 +14,7 @@ class HistoryScreen extends HookWidget{
 
   void getHistories() {
       getIt.get<AuthBloc>().authUser.listen((event) {
-      getIt.get<EmergencyBloc>().getClerkEmergencies(event.token);
+      getIt.get<EmergencyBloc>().getEmergencies(event.token);
     });
   }
 

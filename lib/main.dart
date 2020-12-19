@@ -1,16 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:ebmn_mobile/screens/LoginScreen.dart';
 import 'package:ebmn_mobile/screens/MainScreen.dart';
 import 'package:ebmn_mobile/src/blocs/AuthBloc.dart';
 import 'package:ebmn_mobile/src/blocs/EmergencyBloc.dart';
+import 'package:ebmn_mobile/src/blocs/PatientBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final getIt = GetIt.instance;
-
+final dio = Dio(BaseOptions(baseUrl: "https://ebasemedicalnetwork.herokuapp.com/"));
 void setup() {
   getIt.registerSingleton<EmergencyBloc>(EmergencyBloc());
   getIt.registerSingleton<AuthBloc>(AuthBloc());
+  getIt.registerSingleton<PatientBloc>(PatientBloc());
 
 }
 void main() {

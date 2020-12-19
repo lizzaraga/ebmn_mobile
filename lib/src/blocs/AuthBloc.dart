@@ -30,6 +30,7 @@ class AuthBloc extends ExceptionBloc{
           "email": credentials.email,
           "password": credentials.password
         });
+        
         final authUser = AuthUser.fromJson(jsonDecode(response.body));
 
         final jobResponse = await http.get('https://ebasemedicalnetwork.herokuapp.com/job/${authUser.token}/');

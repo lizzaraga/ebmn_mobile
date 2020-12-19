@@ -19,6 +19,7 @@ class _LoginLoadingDialogState extends State<LoginLoadingDialog> {
     getIt.get<AuthBloc>().authLifecycle.listen((event) {
       if(event == TaskLifecycle.done){
         getIt.get<AuthBloc>().jobUser.listen((event) {
+           Navigator.of(context).pop();
           if(event.job.toLowerCase() == "patient"){
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MainScreen()));
           }else
